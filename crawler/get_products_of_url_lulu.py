@@ -1,3 +1,4 @@
+import time
 from playwright.sync_api import sync_playwright
 
 
@@ -12,16 +13,21 @@ def scrape_products():
         )  # Set headless=True for headless mode
         page = browser.new_page()
 
-        with open("lulu_category.txt", "r") as file:
+        with open("configs/lulu_category.txt", "r") as file:
             links = [line.strip() for line in file.readlines()]
 
-        with open("product_urls_lulu.txt", "a") as output_file:
+        # name = "product_urls_lulu_now_time.txt"
+        name = f"configs/product_urls_lulu_{time.strftime('%Y%m%d-%H%M%S')}.txt"
+
+        with open(name, "a") as output_file:
             for link in links:
+                print(f"Scraping URL: {link}")
                 page.goto(link)
 
                 all_products = set()
 
                 while True:
+                    print(f"Trying to scroll down...")
                     # Scroll down incrementally
                     page.evaluate("window.scrollBy(0, window.innerHeight)")
                     page.wait_for_timeout(2000)  # Wait for 2 seconds

@@ -6,18 +6,16 @@ particularly for projects involving localization and content management across
 different language paths.
 """
 
-import datetime
+import argparse
 import random
 import re
 import time
 from typing import Any, Dict, List
-from urllib.parse import urlparse
-from schema import SQLServerManager
+from sqls.schema import SQLServerManager
 from playwright.sync_api import ElementHandle, Page, sync_playwright
 import json
 import requests
 import os
-from sqlalchemy.exc import IntegrityError
 
 
 def download_image(image_url, save_path):
@@ -26,8 +24,8 @@ def download_image(image_url, save_path):
     }
     response = requests.get(image_url, headers=headers)
     if response.status_code == 200:
-        # with open(save_path, "wb") as file:
-        #     file.write(response.content)
+        with open(save_path, "wb") as file:
+            file.write(response.content)
         return save_path
     else:
         print(f"Failed to download image: {response.status_code}")
@@ -152,7 +150,8 @@ def perform_scraping(income_url, config) -> Dict[str, Any]:
     return contents
 
 
-def main():
+def main(product_urls_file, config_file):
+    # Initialize SQL Server Manager
     manager = SQLServerManager(
         server="localhost,1433",
         database="master",
@@ -160,11 +159,13 @@ def main():
         password="YourStrong!Passw0rd",
     )
 
-    elements_config = read_json("almarsa-gourmet.json")
+    # Read config and elements
+    elements_config = read_json(config_file)
     elements = elements_config["elements"]
     organization_name = elements_config["organization_name"]
 
-    with open("product_urls_almarsa.txt", "r") as file:
+    # Read product URLs from file
+    with open(product_urls_file, "r") as file:
         product_urls = [line.strip() for line in file.readlines()]
 
     session = manager.get_session()
@@ -185,6 +186,7 @@ def main():
 
                 image_id = None
 
+                # Handle image download and processing
                 if content.get("image"):
                     image_filename = os.path.basename(content["image"].split("?")[0])
                     unique_substring = (
@@ -205,6 +207,7 @@ def main():
 
                 organization_id = manager.add_organization(organization_name, session)
 
+                # Add product to the database
                 manager.add_product(
                     title=content.get("title", ""),
                     url=content.get("url", "")["content"],
@@ -218,8 +221,8 @@ def main():
 
             except Exception as e:
                 session.rollback()
-                continue
                 print(f"Error adding product from URL {url}: {e}")
+                continue
 
         session.commit()
     finally:
@@ -227,4 +230,13 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description="Product crawler")
+    parser.add_argument(
+        "--product_urls", required=True, help="Path to the product URLs file"
+    )
+    parser.add_argument("--config", required=True, help="Path to the config file")
+
+    args = parser.parse_args()
+
+    # Call main with command-line arguments
+    main(args.product_urls, args.config)

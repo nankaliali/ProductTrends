@@ -15,10 +15,13 @@ def scrape_products():
         )  # Set headless=True for headless mode
         page = browser.new_page()
 
-        with open("almarsa_category.txt", "r") as file:
+        with open("configs/almarsa_category.txt", "r") as file:
             links = [line.strip() for line in file.readlines()]
 
-        with open("product_urls_almarsa.txt", "a") as output_file:
+        # name - "product_urls_almarsa_now_time.txt"
+        name = f"configs/product_urls_almarsa_{time.strftime('%Y%m%d-%H%M%S')}.txt"
+
+        with open(name, "a") as output_file:
             for link in links:
                 try:
                     all_products = set()
