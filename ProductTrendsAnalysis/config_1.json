@@ -1,0 +1,28 @@
+{
+  "organization_name" : "muscat",
+    "elements": [
+      {
+        "id": 0,
+        "name": "title",
+        "selector": ".base"
+      },
+      {
+        "id": 1,
+        "name": "category",
+        "selector": ".breadcrumbs.mf-initial .items .item",
+        "text_content" : true
+      },
+        {
+            "id": 2,
+            "name": "price",
+            "selector": ".price-container.price-final_price.tax.weee .price",
+            "regex": "(?<=OMR\\s)\\d+\\.\\d{3}"
+        },
+      {
+        "id": 4,
+        "name": "image",
+        "selector": ".zoomImg",
+        "attr": "src"
+      }
+    ]
+  }

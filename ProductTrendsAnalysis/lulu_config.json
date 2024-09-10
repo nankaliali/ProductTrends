@@ -1,0 +1,40 @@
+{
+    "organization_name" : "lulu",
+
+    "elements": [
+      {
+        "id": 0,
+        "name": "title",
+        "selector": ".product-description > h1"
+      },
+      {
+        "id": 1,
+        "name": "category",
+        "selector": "section.breadcrumb-wrapper.d-none.d-lg-block > div > div > div > nav > ol > li",
+        "text_content" : true
+      },
+      {
+        "id": 2,
+        "name": "price",
+        "selector": ".item.price",
+        "regex" : "\\b\\d+\\.\\d{2}\\b"
+
+      },
+      {
+        "id": 3,
+        "name": "description",
+        "selector": ".description-block > ul"
+      },
+      {
+        "id": 4,
+        "name": "information",
+        "selector": "#home > div > div"
+          },
+        {
+            "id": 5,
+            "name": "image",
+            "selector": ".zoomImg",
+            "attr": "src"
+        }
+    ]
+  }
