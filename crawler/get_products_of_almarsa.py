@@ -19,7 +19,7 @@ def scrape_products():
             links = [line.strip() for line in file.readlines()]
 
         # name - "product_urls_almarsa_now_time.txt"
-        name = f"configs/product_urls_almarsa_{time.strftime('%Y%m%d-%H%M%S')}.txt"
+        name = f"data/product_urls_almarsa_2.txt"
 
         with open(name, "a") as output_file:
             for link in links:

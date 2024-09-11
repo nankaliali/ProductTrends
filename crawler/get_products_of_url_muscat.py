@@ -7,7 +7,7 @@ with open("configs/muscat_category.txt", "r") as file:
     product_urls = [line.strip() for line in file.readlines()]
 
 
-name = f"configs/product_urls_muscat_{time.strftime('%Y%m%d-%H%M%S')}.txt"
+name = f"data/product_urls_muscat_2.txt"
 
 for next_url in product_urls:
     print("categort: ", next_url)
